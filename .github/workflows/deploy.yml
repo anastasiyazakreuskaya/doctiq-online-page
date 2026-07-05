@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build Landing Page
+      - name: Build Landing Page
+        run: npm install && npm run build
+        working-directory: ./landing-page
+      
+      # Build Simulation
+      - name: Build Simulation
+        run: npm install && npm run build
+        working-directory: ./simulation
+      
+      # Prepare files for GitHub Pages
+      - name: Organize files
+        run: |
+          mkdir -p public
+          cp -r landing-page/dist/* public/
+          mkdir -p public/simulation
+          cp -r simulation/dist/* public/simulation/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: './public'
+      
+      - uses: actions/deploy-pages@v4
