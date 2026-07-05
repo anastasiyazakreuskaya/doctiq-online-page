@@ -14,20 +14,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       # Create public directory early
       - name: Create public directory
         run: mkdir -p public
 
+      # Ensure Node is available
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       # Build Landing Page
+      - name: Cache npm (landing-page)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-landing-npm-${{ hashFiles('landing-page/package-lock.json') }}
+
       - name: Build Landing Page
-        run: npm install && npm run build
         working-directory: ./landing-page
-      
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-optional
+          fi
+          npm run build
+
       # Build Simulation
+      - name: Cache npm (simulation)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-simulation-npm-${{ hashFiles('simulation/package-lock.json') }}
+
       - name: Build Simulation
-        run: npm install && npm run build
         working-directory: ./simulation
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-optional
+          fi
+          npm run build
       
       # Copy files
       - name: Organize files
