@@ -17,12 +17,12 @@ jobs:
 
       # Build Landing Page
       - name: Build Landing Page
-        run: npm install && npm run build
+        run: npm ci && npm run build
         working-directory: ./landing-page
       
       # Build Simulation
       - name: Build Simulation
-        run: npm install && npm run build
+        run: npm ci && npm run build
         working-directory: ./simulation
       
       # Prepare files for GitHub Pages
