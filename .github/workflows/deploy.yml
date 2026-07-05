@@ -15,20 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Create public directory early
+      - name: Create public directory
+        run: mkdir -p public
+
       # Build Landing Page
       - name: Build Landing Page
-        run: npm ci && npm run build
+        run: npm install && npm run build
         working-directory: ./landing-page
       
       # Build Simulation
       - name: Build Simulation
-        run: npm ci && npm run build
+        run: npm install && npm run build
         working-directory: ./simulation
       
-      # Prepare files for GitHub Pages
+      # Copy files
       - name: Organize files
         run: |
-          mkdir -p public
           cp -r landing-page/dist/* public/
           mkdir -p public/simulation
           cp -r simulation/dist/* public/simulation/
