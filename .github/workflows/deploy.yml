@@ -34,8 +34,9 @@ jobs:
       - name: Build Landing Page
         working-directory: ./landing-page
         run: |
+          rm -rf node_modules
           if [ -f package-lock.json ]; then
-            npm ci
+            npm ci --no-optional
           else
             npm install --no-optional
           fi
@@ -51,8 +52,9 @@ jobs:
       - name: Build Simulation
         working-directory: ./simulation
         run: |
+          rm -rf node_modules
           if [ -f package-lock.json ]; then
-            npm ci
+            npm ci --no-optional
           else
             npm install --no-optional
           fi
