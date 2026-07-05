@@ -1,0 +1,139 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-soft: var(--teal-soft);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-warn: var(--warn);
+  --color-line: var(--line);
+
+  /* EHR mock chrome */
+  --color-chrome: var(--chrome);
+  --color-chrome-2: var(--chrome-2);
+  --color-side: var(--side);
+  --color-row: var(--row);
+  --color-row-alt: var(--row-alt);
+  --color-row-discharge: var(--row-discharge);
+
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Brand: teal + gold on warm paper */
+  --paper: oklch(0.978 0.008 85);
+  --paper-dim: oklch(0.955 0.012 85);
+  --ink: oklch(0.19 0.02 220);
+
+  --teal: oklch(0.55 0.09 195);
+  --teal-deep: oklch(0.38 0.08 200);
+  --teal-soft: oklch(0.93 0.03 195);
+
+  --gold: oklch(0.76 0.14 82);
+  --gold-soft: oklch(0.93 0.06 85);
+
+  --warn: oklch(0.58 0.22 25);
+  --line: oklch(0.88 0.01 220);
+
+  /* EHR chrome (Medicus-inspired but teal) */
+  --chrome: oklch(0.42 0.09 210);           /* top bar teal */
+  --chrome-2: oklch(0.72 0.06 205);         /* toolbar band */
+  --side: oklch(0.93 0.025 200);            /* sidebar wash */
+  --row: oklch(0.995 0.004 220);            /* white row */
+  --row-alt: oklch(0.955 0.025 210);        /* alternating band */
+  --row-discharge: oklch(0.94 0.07 88);     /* gold discharge row */
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--ink);
+  --primary: var(--teal-deep);
+  --primary-foreground: var(--paper);
+  --secondary: var(--paper-dim);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-dim);
+  --muted-foreground: oklch(0.48 0.02 220);
+  --accent: var(--teal-soft);
+  --accent-foreground: var(--ink);
+  --destructive: var(--warn);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--teal);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--teal-deep); color: var(--paper); }
+}
+
+@utility font-display { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.035em; }
+@utility font-mono-ehr { font-family: var(--font-mono); }
+
+/* Medicus-ish underlined section header */
+@utility ehr-section {
+  color: var(--teal-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--teal-deep) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+@utility ehr-link {
+  color: var(--teal-deep);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--teal-deep) 50%, transparent);
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 5%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
