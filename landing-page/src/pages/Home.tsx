@@ -1,9 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-
-export const Route = createFileRoute("/")({
-  component: Landing,
-});
 
 /* =========================================================
    MEDICUS-STYLE EHR MOCK — brand-adapted (teal + gold)
@@ -952,7 +947,7 @@ function Footer() {
   );
 }
 
-function Landing() {
+export default function Landing() {
   return (
     <div id="top" className="min-h-screen bg-paper text-ink">
       <TopBar />
