@@ -52,8 +52,12 @@ jobs:
       - name: Build Simulation
         working-directory: ./simulation
         run: |
-          rm -rf node_modules package-lock.json
-          npm install
+          rm -rf node_modules
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
           npm run build
       
       # Copy files
