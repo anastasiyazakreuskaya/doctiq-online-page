@@ -1,76 +1,81 @@
-name: Deploy to GitHub Pages
+name: Build and deploy site to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
 jobs:
-  build_and_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+          cache: 'npm'
 
-      # Build Landing Page
-      - name: Cache npm (landing-page)
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-landing-npm-${{ hashFiles('landing-page/package-lock.json') }}
-
-      - name: Build Landing Page
+      # --- Build landing page ---
+      - name: Install and build landing-page
         working-directory: ./landing-page
         run: |
-          rm -rf node_modules
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+          npm ci --prefer-offline --no-audit
           npm run build
+        env:
+          CI: true
 
-      # Build Simulation
-      - name: Cache npm (simulation)
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-simulation-npm-${{ hashFiles('simulation/package-lock.json') }}
-
-      - name: Build Simulation
+      # --- Build simulation ---
+      - name: Install and build simulation
         working-directory: ./simulation
         run: |
-          rm -rf node_modules
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+          npm ci --prefer-offline --no-audit
           npm run build
-      
-      # Organize files
-      - name: Organize files
+        env:
+          CI: true
+
+      # --- Assemble site folder ---
+      - name: Prepare site artifact
         run: |
-          mkdir -p public
-          cp -r landing-page/dist/. public/ || true
-          mkdir -p public/simulation
-          cp -r simulation/dist/. public/simulation/ || true
+          rm -rf site
+          mkdir -p site
+          # Copy landing build to root of site
+          if [ -d ./landing-page/dist ]; then
+            cp -r ./landing-page/dist/* site/
+          else
+            echo "Warning: landing-page/dist not found"
+          fi
+          # Put simulation build under /simulation
+          if [ -d ./simulation/dist ]; then
+            mkdir -p site/simulation
+            cp -r ./simulation/dist/* site/simulation/
+          else
+            echo "Warning: simulation/dist not found"
+          fi
+          # (Optional) For SPA refresh support, copy index.html to 404.html
+          if [ -f site/index.html ]; then
+            cp site/index.html site/404.html
+          fi
+          if [ -f site/simulation/index.html ]; then
+            cp site/simulation/index.html site/simulation/404.html
+          fi
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # --- Upload artifact for Pages ---
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: './public'
-      
+          path: site
+
+      # --- Deploy to Pages ---
+      - name: Configure Pages
+        uses: actions/configure-pages@v3
+
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v1
