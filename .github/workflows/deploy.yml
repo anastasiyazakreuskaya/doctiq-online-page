@@ -60,7 +60,12 @@ jobs:
       - name: Organize files
         run: |
           mkdir -p public
-          cp -r landing-page/dist/. public/ || true
+          # Landing output may be produced in .output/public (vinxi) or dist (vite).
+          if [ -d landing-page/.output/public ]; then
+            cp -r landing-page/.output/public/. public/ || true
+          else
+            cp -r landing-page/dist/. public/ || true
+          fi
           mkdir -p public/simulation
           cp -r simulation/dist/. public/simulation/ || true
 
