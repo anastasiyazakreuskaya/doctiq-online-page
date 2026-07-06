@@ -14,61 +14,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Create public directory early
-      - name: Create public directory
-        run: mkdir -p public
 
-      # Ensure Node is available
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Build Landing Page
-      - name: Cache npm (landing-page)
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-landing-npm-${{ hashFiles('landing-page/package-lock.json') }}
-
       - name: Build Landing Page
         working-directory: ./landing-page
         run: |
-          rm -rf node_modules
-          if [ -f package-lock.json ]; then
-            npm ci --no-optional
-          else
-            npm install --no-optional
-          fi
+          npm install
           npm run build
 
       # Build Simulation
-      - name: Cache npm (simulation)
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-simulation-npm-${{ hashFiles('simulation/package-lock.json') }}
-
       - name: Build Simulation
         working-directory: ./simulation
         run: |
-          rm -rf node_modules
-          if [ -f package-lock.json ]; then
-            npm ci --no-optional
-          else
-            npm install --no-optional
-          fi
+          npm install
           npm run build
       
-      # Copy files
+      # Organize files
       - name: Organize files
         run: |
+          mkdir -p public
           cp -r landing-page/dist/* public/
           mkdir -p public/simulation
           cp -r simulation/dist/* public/simulation/
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './public'
       
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
