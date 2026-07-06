@@ -724,12 +724,8 @@ function TopBar() {
         <a href="#top" className="font-display text-2xl text-paper">
           doctiq<span className="text-gold">.</span>
         </a>
-        <nav className="hidden gap-8 font-mono-ehr text-[11px] uppercase tracking-widest text-paper/80 md:flex">
-          <a href="#problem" className="hover:text-gold">Problem</a>
-          <a href="#product" className="hover:text-gold">Product</a>
-          <a href="#how" className="hover:text-gold">How it works</a>
-        </nav>
-        <a href="#contact" className="rounded-[3px] border border-gold bg-gold px-4 py-1.5 font-mono-ehr text-[11px] uppercase tracking-widest text-ink hover:bg-gold-soft">
+
+        <a href="mailto:a.zakreuskaya@gmail.com" className="rounded-[3px] border border-gold bg-gold px-4 py-1.5 font-mono-ehr text-[11px] uppercase tracking-widest text-ink hover:bg-gold-soft">
           Request access
         </a>
       </div>
