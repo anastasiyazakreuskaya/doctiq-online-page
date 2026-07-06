@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Build Landing Page
       - name: Cache npm (landing-page)
@@ -36,9 +36,9 @@ jobs:
         run: |
           rm -rf node_modules
           if [ -f package-lock.json ]; then
-            npm ci --no-optional
+            npm ci
           else
-            npm install --no-optional
+            npm install
           fi
           npm run build
 
@@ -52,12 +52,8 @@ jobs:
       - name: Build Simulation
         working-directory: ./simulation
         run: |
-          rm -rf node_modules
-          if [ -f package-lock.json ]; then
-            npm ci --no-optional
-          else
-            npm install --no-optional
-          fi
+          rm -rf node_modules package-lock.json
+          npm install
           npm run build
       
       # Copy files
