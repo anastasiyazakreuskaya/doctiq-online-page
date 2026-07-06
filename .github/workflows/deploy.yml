@@ -18,29 +18,51 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
       # Build Landing Page
+      - name: Cache npm (landing-page)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-landing-npm-${{ hashFiles('landing-page/package-lock.json') }}
+
       - name: Build Landing Page
         working-directory: ./landing-page
         run: |
-          npm install
+          rm -rf node_modules
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
           npm run build
 
       # Build Simulation
+      - name: Cache npm (simulation)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-simulation-npm-${{ hashFiles('simulation/package-lock.json') }}
+
       - name: Build Simulation
         working-directory: ./simulation
         run: |
-          npm install
+          rm -rf node_modules
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
           npm run build
       
       # Organize files
       - name: Organize files
         run: |
           mkdir -p public
-          cp -r landing-page/dist/* public/
+          cp -r landing-page/dist/. public/ || true
           mkdir -p public/simulation
-          cp -r simulation/dist/* public/simulation/
+          cp -r simulation/dist/. public/simulation/ || true
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
