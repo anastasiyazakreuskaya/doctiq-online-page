@@ -6,11 +6,19 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Configure Vite for GitHub Pages:
+// - use a relative base so built assets load regardless of the repo name
+// - output the build to `docs/` which GitHub Pages can serve from the main branch
 export default defineConfig({
-  vite: {
-    base: './',
-  },
   tanstackStart: {
+    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+    // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    base: "./",
+    build: {
+      outDir: "docs",
+    },
   },
 });
