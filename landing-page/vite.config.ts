@@ -10,6 +10,6 @@ import tailwindcss from "@tailwindcss/vite";
 const BASE = "/";
 
 export default defineConfig({
-  base: BASE,
+  base: './',
   plugins: [react(), tailwindcss()],
 });
